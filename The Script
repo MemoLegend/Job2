@@ -1,0 +1,76 @@
+local pathFinding = game:GetService("PathfindingService")
+
+local humanoid = script.Parent.Humanoid
+local primaryPart = script.Parent.HumanoidRootPart
+
+local base = game.Workspace.Base_
+local baseHealth = base.Health
+
+local damage = 10
+
+local EnemyMaxHealth = 10
+humanoid.MaxHealth = EnemyMaxHealth
+
+local Range = 20
+local InRange = false
+local debounce = false
+
+local function GetToPath()
+	local path = pathFinding:CreatePath()
+
+	print("CreatedPath")
+	path:ComputeAsync(primaryPart.Position, base.Position)
+	print("Async")
+	local WayPoints = path:GetWaypoints()
+	print("Waypoints")
+	print(WayPoints)
+	for i, waypoint in pairs(WayPoints) do
+		if waypoint.Action == Enum.PathWaypointAction.Jump then
+			humanoid:ChangeState(Enum.HumanoidStateType.Jumping)
+		end
+		humanoid:MoveTo(waypoint.Position)
+		humanoid.MoveToFinished:Wait(2)
+
+		if (primaryPart.Position - base.Position).Magnitude <= Range then
+			
+			InRange = true
+			break
+		end
+
+	end
+end
+
+
+if InRange then
+	print("Damage")
+	
+else
+	GetToPath()
+	print(InRange)
+end
+
+while InRange do
+
+	
+	
+	
+	if (primaryPart.Position - base.Position).Magnitude <= Range and not debounce then
+		debounce = true
+		print("Continue")
+		baseHealth.Value -= damage
+		print("Damage")
+		if baseHealth.Value == 0 then
+			base:Destroy()
+		end
+		wait(3)
+		debounce = false
+	else
+		print("Not Continue")
+		InRange = false
+		GetToPath()
+
+	end
+	
+	
+end
+	
