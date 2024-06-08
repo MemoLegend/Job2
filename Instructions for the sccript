@@ -1,0 +1,4 @@
+1- Add the script to the enemy you want
+2-Name the base that you want the enemy to damage it "Base_"
+3-Create an int value inside the base and name it "Health"
+4-set the value of it to whatever you want the health of the base to be
